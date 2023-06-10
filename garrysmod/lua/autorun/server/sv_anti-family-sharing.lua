@@ -10,8 +10,6 @@ local function CheckFamilySharing(ply)
         ),
 
         function(body)
-            local body = util.JSONToTable(body)
-            
             if (not util.JSONToTable(body).permanent) then
                 ply:Kick("You kicked by AntiFamilySharing")
             end
