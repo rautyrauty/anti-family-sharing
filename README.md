@@ -1,5 +1,12 @@
 # Multithreaded Anti Family Sharing
 
+## Install
+
+Move gmsv_AntiFamilySharing_win32.dll to \garrysmod\lua\bin (create if it doesn't exist)
+
+Move sv_anti-family-sharing.lua to \garrysmod\lua\autorun\server (same)
+
+
 ## Preparation for Build
 Clone [gmod-module-base-development](https://github.com/Facepunch/gmod-module-base/tree/development)
 
@@ -13,3 +20,4 @@ I am grateful to the creators of the following open source libraries:
   - [OpenSSL](https://www.openssl.org/) (Apache License 2.0)
   - [mINI](https://github.com/pulzed/mINI) (MIT License)
   - [json](https://github.com/nlohmann/json) (MIT License)
+
