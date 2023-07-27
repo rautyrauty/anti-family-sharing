@@ -1,47 +1,85 @@
-#include "GarrysMod/Lua/Interface.h"
-#include <chrono>
+#include <deque>
 #include <thread>
 
-void ultra_hard(long long sec)
+#include "GarrysMod/Lua/Interface.h"
+#include "ini.h"
+#include "anti-family-sharing.h"
+
+std::deque<std::string> userid_to_kick;
+
+LUA_FUNCTION(EmptyFunc)
 {
-    std::this_thread::sleep_for(std::chrono::seconds(sec));
+    return 0;
 }
 
-LUA_FUNCTION(OneThread)
+LUA_FUNCTION(LuaAntiFamilySharing)
 {
-    LUA->CheckType(1, GarrysMod::Lua::Type::Number); // Make sure a number is the first argument
-
-    long long number = (LUA->GetNumber(1)); // Get the first argument
-
-    ultra_hard(number);
-
-    LUA->PushBool(true); // Push our bool onto the stack.
-
-    return 1; // How many values we are returning
+    std::string steamid64 = LUA->GetString(1);
+    std::string userid   = LUA->GetString(2);
+    std::thread([steamid64,userid](){
+        if(AntiFamilySharing::getInstance().IsUsingFamilySharing(steamid64)) userid_to_kick.push_back(userid);
+    }).detach();
+    return 0;
 }
 
-LUA_FUNCTION(DoubleThread)
+LUA_FUNCTION(KickFamilySharingUsers)
 {
-    LUA->CheckType(1, GarrysMod::Lua::Type::Number); // Make sure a number is the first argument
+    if(not userid_to_kick.empty())
+    {
+        LUA->PushSpecial(GarrysMod::Lua::SPECIAL_GLOB); // Fetch the global table
+        LUA->GetField(-1, "game");
 
-    long long number = (LUA->GetNumber(1)); // Get the first argument
+        while(not userid_to_kick.empty())
+        {
+            LUA->GetField(-1, "KickID");
+            LUA->PushString(userid_to_kick.front().c_str());
+            LUA->PushString("Anti Family Sharing kick response");
+            LUA->Call(2, 0);
+            userid_to_kick.pop_front();
+        }
 
-    std::thread th(ultra_hard, number);
-    th.detach();
+        LUA->Pop(); // Pop global table
+    }
 
-    LUA->PushBool(true); // Push our bool onto the stack.
 
-    return 1; // How many values we are returning
+    return 0;
 }
 
 GMOD_MODULE_OPEN()
 {
-    LUA->PushSpecial(GarrysMod::Lua::SPECIAL_GLOB); // Push the global table
-    //LUA->CreateTable();
-    LUA->PushCFunction(OneThread); // Push our function
-    LUA->SetField(-2, "OneThread");
-    LUA->PushCFunction(DoubleThread); // Push our function
-    LUA->SetField(-2, "DoubleThread");
+    LUA->PushSpecial( GarrysMod::Lua::SPECIAL_GLOB );
+
+    mINI::INIFile file("AntiFamilySharing.ini");
+    mINI::INIStructure ini;
+
+    if( file.read(ini) and not(std::string(ini["options"]["web_steam_api_key"]).empty()) )
+    {
+        LUA->GetField(-1, "print");
+        LUA->PushString("Binary module Anti Family Sharing is running");
+        LUA->Call(1, 0);
+
+        LUA->PushCFunction( LuaAntiFamilySharing );
+        LUA->SetField( -2, "LuaAntiFamilySharing" );
+
+        LUA->GetField(-1, "hook");
+        LUA->GetField(-1, "Add");
+        LUA->PushString("Think");
+        LUA->PushString("KickFamilySharingUsers");
+        LUA->PushCFunction( KickFamilySharingUsers );
+        LUA->Call(3, 0);
+
+        AntiFamilySharing::init(ini["options"]["web_steam_api_key"]);
+    }
+    else
+    {
+        ini["options"]["web_steam_api_key"] = "";
+        file.generate(ini);
+        LUA->GetField(-1, "print");
+        LUA->PushString("The Anti Family Sharing binary module is not running. Enter web steam api key in the AntiFamilySharing.ini file");
+        LUA->Call(1, 0);
+        LUA->PushCFunction( EmptyFunc );
+        LUA->SetField( -2, "LuaAntiFamilySharing" );
+    }
     LUA->Pop();
 
     return 0;
