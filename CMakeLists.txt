@@ -14,7 +14,7 @@ set(GMOD_MODULE_BASE_DIR "D:/repositories/gmod-module-base-development")
 add_library(${PROJECT_NAME} SHARED)
 target_sources(${PROJECT_NAME} PRIVATE main.cpp anti-family-sharing.cpp anti-family-sharing.h ini.h json.hpp)
 
-FIND_PACKAGE( Boost 1.82.0 REQUIRED)
+FIND_PACKAGE( Boost REQUIRED)
 message(STATUS "Boost include dir: ${Boost_INCLUDE_DIR}")
 INCLUDE_DIRECTORIES( ${Boost_INCLUDE_DIR} )
 
@@ -29,7 +29,7 @@ endif()
 add_subdirectory(${GMOD_MODULE_BASE_DIR}/include ${GMOD_MODULE_BASE_DIR}/include/build)
 target_link_libraries(${PROJECT_NAME} ws2_32)
 target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
-target_link_libraries(${PROJECT_NAME} OpenSSL::SSL OpenSSL::Crypto)
+target_link_libraries(${PROJECT_NAME} ${CMAKE_DL_LIBS} "${OPENSSL_ROOT_DIR}/lib/libcrypto.lib" "${OPENSSL_ROOT_DIR}/lib/libssl.lib")
 target_link_libraries(${PROJECT_NAME} gmod-module-base)
 
 set_gmod_suffix_prefix(${PROJECT_NAME})
