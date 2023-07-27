@@ -34,7 +34,7 @@ bool AntiFamilySharing::IsUsingFamilySharing(const std::string& steamid64)
     int game_count = responseJson["response"]["game_count"];
     for(int i = 0; i < game_count; i+=1)
     {
-        if (object[i]["appid"] == "4000") return false;
+        if (object[i]["appid"] == 4000) return false;
     }
     return true;
 }
