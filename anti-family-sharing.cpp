@@ -5,7 +5,7 @@ bool AntiFamilySharing::IsUsingFamilySharing(const std::string& steamid64)
     using namespace boost::beast;
     using namespace boost::asio;
 
-    const std::string host = "api.steampowered.com";//https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/?key=152BF4894662E499CAC9490922325590&steamid=76561199439175858&include_appinfo=false&include_played_free_games=false&appids_filter=0
+    const std::string host = "api.steampowered.com";
     const std::string target = "/IPlayerService/GetOwnedGames/v1/?key=" + m_kSteamWebApiKey + "&steamid=" + steamid64 + "&include_appinfo=false&include_played_free_games=false&appids_filter=0";
 
     io_context ioc;
