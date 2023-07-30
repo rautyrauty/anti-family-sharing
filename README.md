@@ -21,3 +21,7 @@ I am grateful to the creators of the following open source libraries:
   - [mINI](https://github.com/pulzed/mINI) (MIT License)
   - [json](https://github.com/nlohmann/json) (MIT License)
 
+## Сделать
+
+- Залить билд для линукса
+- Изменить с создания новых потоков на передачу в один существующий
