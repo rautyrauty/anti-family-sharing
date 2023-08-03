@@ -14,6 +14,34 @@ Install [Boost C++ Libraries](boost) and [OpenSSL](https://www.openssl.org/) for
 
 Override OPENSSL_ROOT_DIR,BOOST_ROOT and GMOD_MODULE_BASE_DIR in [CMakeLists.txt](https://github.com/rautyrauty/multithreaded-anti-family-sharing/blob/main/CMakeLists.txt#L10)
 
+## Build Linux(Ubuntu 22.04.2)
+
+0. Install [CMake](https://cmake.org/)
+
+```bash
+sudo apt-get install cmake
+```
+
+1. Install [Boost C++ Libraries](boost) and [OpenSSL](https://www.openssl.org/)
+
+```bash
+sudo apt-get install libboost-all-dev
+sudo apt-get install libssl-dev
+```
+
+2. Build
+```
+cd [root-directory-of-project]
+cmake .
+cmake --build ./
+```
+If OpenSSL or Boost is installed in a non-standard location u can overwrite OPENSSL_ROOT_DIR and BOOST_ROOT in CMakeLists.txt or just
+```
+set OPENSSL_ROOT_DIR=some_dir
+set BOOST_ROOT=some_dir
+```
+
+
 ## Credits
 I am grateful to the creators of the following open source libraries:
   - [Boost C++ Libraries](http://www.boost.org/) (Boost Software License)

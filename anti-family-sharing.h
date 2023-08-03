@@ -1,6 +1,8 @@
 #ifndef AFS_H
 #define AFS_H
 
+#include <deque>
+#include <thread>
 #include <string>
 #include <stdexcept>
 
@@ -13,37 +15,33 @@
 class AntiFamilySharing
 {
 public:
-    static void init(std::string steam_web_api_key)
+    struct PlayerInfo
     {
-      getInstanceImpl(&steam_web_api_key);
-    }
+        std::string userid;
+        std::string steamid64;
+    };
 
-private:
-    static AntiFamilySharing& getInstanceImpl(std::string* steam_web_api_key = nullptr)
-    {
-        static AntiFamilySharing instance{ steam_web_api_key };
-        return instance;
-    }
-
-public:
-    AntiFamilySharing(std::string* steam_web_api_key) :
-        m_kSteamWebApiKey{ steam_web_api_key ? move(*steam_web_api_key) : std::string{} }
-    {
-        if (nullptr == steam_web_api_key) throw std::runtime_error{ "Questionnary not initialized" };
-    }
-
-    static AntiFamilySharing& getInstance()
-    {
-        return getInstanceImpl();
-    }
+    static void init(std::string steam_web_api_key);
+    static AntiFamilySharing& getInstance();
 
     AntiFamilySharing(const AntiFamilySharing&) = delete;
     void operator = (const AntiFamilySharing&) = delete;
 
-    // in cpp
-    bool IsUsingFamilySharing(const std::string& steamid64);
+    void PushPlayerToCheck(const PlayerInfo&);
+    bool HavePlayerToKick() const;;
+    std::string GetPlayerToKick();
+
+    std::deque<std::string> m_messages;
 
 private:
+    AntiFamilySharing(std::string* steam_web_api_key);
+    static AntiFamilySharing& getInstanceImpl(std::string* steam_web_api_key = nullptr);
+
+    bool IsUsingFamilySharing(const std::string& steamid64);
+
+    std::deque<std::string> m_userid_to_kick;
+    std::deque<PlayerInfo> m_to_check;
+
     const std::string m_kSteamWebApiKey;
 };
 
