@@ -2,12 +2,6 @@
 #include "ini.h"
 #include "anti-family-sharing.h"
 
-
-LUA_FUNCTION(EmptyFunc)
-{
-    return 0;
-}
-
 LUA_FUNCTION(AFSCheckStart)
 {
     AntiFamilySharing::PlayerInfo to_check;
@@ -97,8 +91,6 @@ GMOD_MODULE_OPEN()
         LUA->GetField(-1, "print");
         LUA->PushString("The Anti Family Sharing binary module is not running. Enter web steam api key in the AntiFamilySharing.ini file");
         LUA->Call(1, 0);
-        LUA->PushCFunction( EmptyFunc );
-        LUA->SetField( -2, "LuaAntiFamilySharing" );
     }
     LUA->Pop();
 

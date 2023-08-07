@@ -1,46 +1,27 @@
 # Multithreaded Anti Family Sharing
 
-## Install
+A cross-platform dynamic library or a binary module for Garry's Mod game servers that provides protection from family sharing.
 
-Move gmsv_AntiFamilySharing_win32.dll to \garrysmod\lua\bin (create if it doesn't exist)
+Family Sharing is a steam feature that allows you to distribute your game to other accounts. The person was denied access to the server, he creates a new account, distributes the game and logs on to the server. To find out whether the player is the true owner of the game is possible only with the help of the web steam api. There were already Lua solutions, but they all had one problem - single-threaded processing.
 
-Move sv_anti-family-sharing.lua to \garrysmod\lua\autorun\server (same)
+## Installation
 
-
-## Preparation for Build
-Clone [gmod-module-base-development](https://github.com/Facepunch/gmod-module-base/tree/development)
-
-Install [Boost C++ Libraries](boost) and [OpenSSL](https://www.openssl.org/) for x32 (because all gmod servers are running on this bit depth)
-
-Override OPENSSL_ROOT_DIR,BOOST_ROOT and GMOD_MODULE_BASE_DIR in [CMakeLists.txt](https://github.com/rautyrauty/multithreaded-anti-family-sharing/blob/main/CMakeLists.txt#L10)
-
-## Build Linux(Ubuntu 22.04.2)
-
-0. Install [CMake](https://cmake.org/)
-
-```bash
-sudo apt-get install cmake
+1. Install [gmod_require](https://github.com/danielga/gmod_require) (to save your nerves):
+Download https://github.com/danielga/gmod_require/releases/tag/v1 and move it to /garrysmod/lua/bin/
+Download https://github.com/danielga/gmod_require/tree/master/includes/modules (both) and move them to /garrysmod/lua/includes/modules
+2. Install [OpenSSL](https://www.openssl.org/)
+For Windows:
+Download https://slproweb.com/products/Win32OpenSSL.html and move libcrypto.dll to ./bin (or in another way garrysmod/../bin, not garrysmod/lua/bin)
+For Linux (perhaps it is possible without -dev, but I have not checked):
 ```
-
-1. Install [Boost C++ Libraries](boost) and [OpenSSL](https://www.openssl.org/)
-
-```bash
-sudo apt-get install libboost-all-dev
 sudo apt-get install libssl-dev
 ```
-
-2. Build
+3. Move gmsv_AntiFamilySharing_platform.dll to /garrysmod/lua/bin
+4. Create .lua file in garrysmod/lua/autorun/server with this code:
+```lua
+require("require")
+require("AntiFamilySharing")
 ```
-cd [root-directory-of-project]
-cmake .
-cmake --build ./
-```
-If OpenSSL or Boost is installed in a non-standard location u can overwrite OPENSSL_ROOT_DIR and BOOST_ROOT in CMakeLists.txt or just
-```
-set OPENSSL_ROOT_DIR=some_dir
-set BOOST_ROOT=some_dir
-```
-
 
 ## Credits
 I am grateful to the creators of the following open source libraries:
@@ -48,8 +29,4 @@ I am grateful to the creators of the following open source libraries:
   - [OpenSSL](https://www.openssl.org/) (Apache License 2.0)
   - [mINI](https://github.com/pulzed/mINI) (MIT License)
   - [json](https://github.com/nlohmann/json) (MIT License)
-
-## Сделать
-
-- Залить билд для линукса
-- Изменить с создания новых потоков на передачу в один существующий
+  - [gmod_require](https://github.com/danielga/gmod_require)

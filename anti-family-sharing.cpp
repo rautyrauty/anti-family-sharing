@@ -34,10 +34,9 @@ AntiFamilySharing::AntiFamilySharing(std::string* steam_web_api_key) :
     if (nullptr == steam_web_api_key) throw std::runtime_error{ "AntiFamilySharing not initialized" };
 
     std::thread([this]{
-        using namespace std::chrono_literals;
         while(true)
         {
-            std::this_thread::sleep_for(100ms);
+            std::this_thread::sleep_for(std::chrono::microseconds(100));
             if (m_to_check.empty()) continue;
 
             if (IsUsingFamilySharing(m_to_check.front().steamid64))

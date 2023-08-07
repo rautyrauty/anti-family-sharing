@@ -4,7 +4,6 @@
 #include <deque>
 #include <thread>
 #include <string>
-#include <stdexcept>
 
 #include <boost/asio.hpp>
 #include <boost/asio/ssl.hpp>
